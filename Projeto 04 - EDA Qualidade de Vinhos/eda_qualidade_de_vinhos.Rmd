@@ -1,0 +1,854 @@
+###Qualidade de Vinhos
+#####por Anderson de Carvalho
+09 de Outubro de 2018
+
+------
+
+Este relatório explora um dataset com mais de 1.500 registros
+de amostras de vinho avaliadas e classificadas por especialistas em vinho.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Carregue aqui todos os pacotes utilizados 
+# na sua análise realizada neste arquivo fonte.
+
+# Note que o parâmetro "echo" foi definido como FALSE neste código.
+# Isso previne que o código apresente resultados formatados em HTML.
+# Você deve definir echo=FALSE para todos os blocos de código no seu arquivo.
+
+library(janitor)
+library(ggplot2)
+library(gridExtra)
+library(GGally)
+library(dplyr)
+library(memisc)
+```
+
+```{r echo=FALSE, Load_the_Data}
+# Carregamento dos dados
+wd <- read.csv('wineQualityReds.csv', sep=',')
+```
+
+```{r echo=FALSE, Explore_the_Data}
+# Exibe dimensão do dataset
+dim(wd)
+
+# Exibe de estrutura do dataset
+str(wd)
+```
+
+O dataset tem 1.599 observações e 13 atributos.
+
+------
+
+# Seção de Gráficos Univariados
+```{r echo=FALSE, Univariate_Plots}
+# Exibe sumário estatístico
+summary(wd)
+```
+  
+A variável 'X' parece ser um índice sequencial.  
+  
+Seguiu-se em observação das distribuções das demais variáveis.  
+
+```{r echo=FALSE}
+# Cria variável com código hexa html da cor 'vinho'
+wine_color = '#722F37'
+
+# Plota gráfico fixed.acidity
+grid.arrange(
+  ggplot(data = wd, aes(x = fixed.acidity)) +
+    geom_histogram(binwidth = 0.3, alpha = 0.2,
+                   color = wine_color, fill = I(wine_color)) +
+    scale_x_continuous(breaks = seq(2,18,2), lim = c(2, 18)) +
+    ggtitle('Distribuição da Acidez Fixa') +
+    labs(x="fixed.acidity (g / dm ^ 3)", y="Frequência"),
+  ggplot(data = wd, aes(x =1, y = fixed.acidity)) +
+    geom_jitter(alpha = 0.1, color = wine_color) +
+    geom_boxplot(alpha = 0.2, color = wine_color) +
+    scale_y_continuous(breaks = seq(0,16,0.5)) +
+    ggtitle('Distribuição da Acidez Fixa') +
+    labs(x="", y="fixed.acidity (g / dm ^ 3)"),
+  ncol = 2)
+
+# Exibe sumário fixed.acidity
+summary(wd$fixed.acidity)
+
+
+# Plota gráfico volatile.acidity
+grid.arrange(
+  ggplot(data = wd, aes(x = volatile.acidity)) +
+    geom_histogram(binwidth = 0.06, alpha = 0.2,
+                   color = wine_color, fill = I(wine_color)) +
+    scale_x_continuous(breaks = seq(0,1.7,0.2), lim = c(0, 1.7)) +
+    ggtitle('Distribuição da Acidez Volátil') +
+    labs(x="volatile.acidity (g / dm ^ 3)", y="Frequência"),
+  ggplot(data = wd, aes(x =1, y = volatile.acidity)) +
+    geom_jitter(alpha = 0.1, color = wine_color) +
+    geom_boxplot(alpha = 0.2, color = wine_color) +
+    scale_y_continuous(breaks = seq(0,1.6,0.1)) +
+    ggtitle('Distribuição da Acidez Volátil') +
+    labs(x="", y="volatile.acidity (g / dm ^ 3)"),
+  ncol = 2)
+
+# Exibe sumário volatile.acidity
+summary(wd$volatile.acidity)
+
+
+# Plota gráfico citric.acid
+grid.arrange(
+  ggplot(data = wd, aes(x = citric.acid)) +
+    geom_histogram(binwidth = 0.03, alpha = 0.2,
+                   color = wine_color, fill = I(wine_color)) +
+    scale_x_continuous(breaks = seq(0,1.3,0.2), lim = c(0, 1.3)) +
+    ggtitle('Distribuição do Ácido Cítrico') +
+    labs(x="citric.acid (g / dm ^ 3)", y="Frequência"),
+  ggplot(data = wd, aes(x =1, y = citric.acid)) +
+    geom_jitter(alpha = 0.1, color = wine_color) +
+    geom_boxplot(alpha = 0.2, color = wine_color) +
+    scale_y_continuous(breaks = seq(0,16,0.1)) +
+    ggtitle('Distribuição do Ácido Cítrico') +
+    labs(x="", y="citric.acid (g / dm ^ 3)"),
+  ncol = 2)
+
+# Exibe sumário citric.acid
+summary(wd$volatile.acidity)
+
+
+# Plota gráfico residual.sugar
+grid.arrange(
+  ggplot(data = wd, aes(x = residual.sugar)) +
+    geom_histogram(binwidth = 0.6, alpha = 0.2,
+                   color = wine_color, fill = I(wine_color)) +
+    scale_x_continuous(breaks = seq(0,18,2), lim = c(0, 18)) +
+    ggtitle('Distribuição do Açúcar Residual') +
+    labs(x="residual.sugar (g / dm ^ 3)", y="Frequência"),
+  ggplot(data = wd, aes(x =1, y = residual.sugar)) +
+    geom_jitter(alpha = 0.1, color = wine_color) +
+    geom_boxplot(alpha = 0.2, color = wine_color) +
+    scale_y_continuous(breaks = seq(0,16,1)) +
+    ggtitle('Distribuição do Açúcar Residual') +
+    labs(x="", y="residual.sugar (g / dm ^ 3)"),
+  ncol = 2)
+
+# Exibe sumário residual.sugar
+summary(wd$volatile.acidity)
+
+
+# Plota gráfico chlorides
+grid.arrange(
+  ggplot(data = wd, aes(x = chlorides)) +
+    geom_histogram(binwidth = 0.02, alpha = 0.2,
+                   color = wine_color, fill = I(wine_color)) +
+    scale_x_continuous(breaks = seq(0,0.7,0.1), lim = c(0, 0.7)) +
+    ggtitle('Distribuição dos Cloretos') +
+    labs(x="chlorides (g / dm ^ 3)", y="Frequência"),
+  ggplot(data = wd, aes(x =1, y = chlorides)) +
+    geom_jitter(alpha = 0.1, color = wine_color) +
+    geom_boxplot(alpha = 0.2, color = wine_color) +
+    scale_y_continuous(breaks = seq(0,1,0.05)) +
+    ggtitle('Distribuição dos Cloretos') +
+    labs(x="", y="chlorides (g / dm ^ 3)"),
+  ncol = 2)
+
+# Exibe sumário chlorides
+summary(wd$volatile.acidity)
+
+
+# Plota gráfico free.sulfur.dioxide
+grid.arrange(
+  ggplot(data = wd, aes(x = free.sulfur.dioxide)) +
+    geom_histogram(binwidth = 1.5, alpha = 0.2,
+                   color = wine_color, fill = I(wine_color)) +
+    scale_x_continuous(breaks = seq(0,80,10), lim = c(0, 80)) +
+    ggtitle('Distrib. do Dióxido de Enxofre Livre') +
+    labs(x="free.sulfur.dioxide (mg / dm ^ 3)", y="Frequência"),
+  ggplot(data = wd, aes(x =1, y = free.sulfur.dioxide)) +
+    geom_jitter(alpha = 0.1, color = wine_color) +
+    geom_boxplot(alpha = 0.2, color = wine_color) +
+    scale_y_continuous(breaks = seq(0,80,5)) +
+    ggtitle('Distrib. do Dióxido de Enxofre Livre') +
+    labs(x="", y="free.sulfur.dioxide (mg / dm ^ 3)"),
+  ncol = 2)
+
+# Exibe sumário free.sulfur.dioxide
+summary(wd$volatile.acidity)
+
+
+# Plota gráfico total.sulfur.dioxide
+grid.arrange(
+  ggplot(data = wd, aes(x = total.sulfur.dioxide)) +
+    geom_histogram(binwidth = 6, alpha = 0.2,
+                   color = wine_color, fill = I(wine_color)) +
+    scale_x_continuous(breaks = seq(0,300,50), lim = c(0, 300)) +
+    ggtitle('Distrib. do Dióxido de Enxofre Total') +
+    labs(x="total.sulfur.dioxide (mg / dm ^ 3)", y="Frequência"),
+  ggplot(data = wd, aes(x =1, y = total.sulfur.dioxide)) +
+    geom_jitter(alpha = 0.1, color = wine_color) +
+    geom_boxplot(alpha = 0.2, color = wine_color) +
+    scale_y_continuous(breaks = seq(0,300,20)) +
+    ggtitle('Distrib. do Dióxido de Enxofre Total') +
+    labs(x="", y="total.sulfur.dioxide (mg / dm ^ 3)"),
+  ncol = 2)
+
+# Exibe sumário total.sulfur.dioxide
+summary(wd$volatile.acidity)
+
+
+# Plota gráfico density
+grid.arrange(
+  ggplot(data = wd, aes(x = density)) +
+    geom_histogram(binwidth = 0.0004, alpha = 0.2,
+                   color = wine_color, fill = I(wine_color)) +
+    scale_x_continuous(breaks = seq(0.990,1.005,0.002), lim = c(0.990, 1.005)) +
+    ggtitle('Distribuição da Densidade') +
+    labs(x="density (g / cm ^ 3)", y="Frequência"),
+  ggplot(data = wd, aes(x =1, y = density)) +
+    geom_jitter(alpha = 0.1, color = wine_color) +
+    geom_boxplot(alpha = 0.2, color = wine_color) +
+    scale_y_continuous(breaks = seq(0,2,0.001)) +
+    ggtitle('Distribuição da Densidade') +
+    labs(x="", y="density (g / cm ^ 3)"),
+  ncol = 2)
+
+# Exibe sumário density
+summary(wd$volatile.acidity)
+
+
+# Plota gráfico pH
+grid.arrange(
+  ggplot(data = wd, aes(x = pH)) +
+    geom_histogram(binwidth = 0.05, alpha = 0.2,
+                   color = wine_color, fill = I(wine_color)) +
+    scale_x_continuous(breaks = seq(2.5,4.5,0.2), lim = c(2.5, 4.5)) +
+    ggtitle('Distribuição do pH') +
+    labs(y="Frequência"),
+  ggplot(data = wd, aes(x =1, y = pH)) +
+    geom_jitter(alpha = 0.1, color = wine_color) +
+    geom_boxplot(alpha = 0.2, color = wine_color) +
+    scale_y_continuous(breaks = seq(0,16,0.1)) +
+    ggtitle('Distribuição do pH') +
+    labs(x=""),
+  ncol = 2)
+
+# Exibe sumário pH
+summary(wd$volatile.acidity)
+
+
+# Plota gráfico sulphates
+grid.arrange(
+  ggplot(data = wd, aes(x = sulphates)) +
+    geom_histogram(binwidth = 0.05, alpha = 0.2,
+                   color = wine_color, fill = I(wine_color)) +
+    scale_x_continuous(breaks = seq(0.2,2.1,0.2), lim = c(0.2, 2.1)) +
+    ggtitle('Distribuição dos Sulfatos') +
+    labs(x="sulphates (g / dm ^ 3)", y="Frequência"),
+  ggplot(data = wd, aes(x =1, y = sulphates)) +
+    geom_jitter(alpha = 0.1, color = wine_color) +
+    geom_boxplot(alpha = 0.2, color = wine_color) +
+    scale_y_continuous(breaks = seq(0,2,0.1)) +
+    ggtitle('Distribuição dos Sulfatos') +
+    labs(x="", y="sulphates (g / dm ^ 3)"),
+  ncol = 2)
+
+# Exibe sumário sulphates
+summary(wd$volatile.acidity)
+
+
+# Plota gráfico quality
+  ggplot(data = wd, aes(x = quality)) +
+    geom_histogram(binwidth = 0.3, alpha = 0.2,
+                   color = wine_color, fill = I(wine_color)) +
+    scale_x_continuous() +
+    ggtitle('Distribuição da Qualidade') +
+    labs(y="Frequência")
+
+# Exibe sumário quality
+summary(wd$volatile.acidity)
+  
+  
+# Cria variável class
+wd$class <- ifelse(wd$quality < 5, 'inferior', ifelse(
+  wd$quality < 7, 'average', 'better'))
+
+wd$class <- ordered(wd$class,
+                       levels = c('better', 'average', 'inferior'))
+
+# Plota gráfico class
+  ggplot(data = wd, aes(x = class)) +
+    geom_bar(width = 0.3, alpha = 0.2, color = wine_color,
+             fill = I(wine_color)) +
+    ggtitle('Distribuição por Classificação') +
+    labs(y="Frequência")
+
+# Exibe sumário class
+tabyl(wd$class, sort = TRUE)
+
+```
+Foram percebidos outliers em 'fixed.acidity', 'volatile.acidity', 'citric.acid', 'residual.sugar', 'chlorides', 'sulfur.dioxide', 'total.sulfur.dioxide' e 'sulphates'.
+
+A distribuição de observações em relação a qualidade dos vinhos parece desequilibrada, com mais observações de vinhos medianos.
+
+------
+
+# Análise Univariada
+
+### Qual é a estrutura do conjunto de dados?
+
+O dataset tem 1.599 observações, 11 atributos + 1 atributo de saída.
+
+Atributos de entrada (baseados em testes físico-químicos):
+
+01 - fixed.acidity / acidez fixa (ácido tartárico - g / dm ^ 3)  
+02 - volatile.acidity / acidez volátil (ácido acético - g / dm ^ 3)  
+03 - citric.acid / ácido cítrico (g / dm ^ 3)  
+04 - residual.sugar / açúcar residual (g / dm ^ 3)  
+05 - chlorides / cloretos (cloreto de sódio - g / dm ^ 3  
+06 - free.sulfur.dioxide / dióxido de enxofre livre (mg / dm ^ 3)  
+07 - total.sulfur.dioxide / dióxido de enxofre total (mg / dm ^ 3)  
+08 - density / densidade (g / cm ^ 3)  
+09 - pH  
+10 - sulphates / sulfatos (sulfato de potássio - g / dm3)  
+11 - alcohol / álcool (% em volume)  
+
+Atributo de saída (baseado em dados sensoriais):  
+
+12 - quality / qualidade (pontuação entre 0 e 10) 
+
+### Quais são os principais atributos de interesse deste conjunto de dados?
+
+O principal atributo é 'quality'.
+
+### Quais outros atributos você acha que podem lhe auxiliar na investigação destes atributos de interesse?
+
+Estima-se compreender quais características influenciaram na apreciação dos vinhos pelos especialista.
+Intuitivamente, optou-se inicialmente pelos os atributos que parecem ter relação com a acidez, doçura e teor alcólico dos vinhos: 'fixed.acidity', 'volatile.acidity', 'citric.acid', 'residual.sugar' e 'alcohol'.
+
+
+### Você criou novas variáveis a partir dos atributos existentes no conjunto de dados?
+
+Sim. Foi criada a váriavel 'class' que distribui a qualidade dos vinhos em 3 classes: 'better', 'average' e 'inferior'.
+
+### Dos atributos investigados, distribuições incomuns foram encontradas? Você aplicou operações nos dados para limpá-los, ajustá-los ou mudar a forma dos dados? Se sim, por quê?
+
+Sim, percebeu-se a existência de outliers nos atributos: 'fixed.acidity', 'volatile.acidity', 'citric.acid', 'residual.sugar', 'chlorides', 'free.sulfur.dioxide', 'total.sulfur.dioxide' e 'sulphates'.
+
+Na documentação que acompanha o dataset é mensionada a existência de muitas observações de vinhos medianos e poucas de ruins e excelentes. E que uma detecção de outliers poderia, talvez, identificar os poucos piores e excelentes vinhos.
+Remover os outliers poderia prejudicar a compreensão de quais características tornam um vinho excelente ou ruim.
+
+Portanto, optou-se por não remover os outliers.
+
+------
+
+# Seção de Gráficos Bivariados
+
+Uma matriz de correlação é de grande ajuda para uma exploração incial da correlações.
+
+```{r echo=FALSE, Bivariate_Plots, fig.width=10,fig.height=10}
+# Plota gráfico Correlation Matrix
+ggpairs(wd[2:13],
+        lower = list(continuous =
+                       wrap("points", color = wine_color, alpha = 0.5),
+                     combo = wrap("box", color = wine_color, alpha = 0.3),
+                     discrete = wrap("facetbar", color = wine_color,
+                                     alpha = 0.3)),
+        diag = list(continuous = wrap("densityDiag", color = wine_color,
+                                      alpha = 0.5))) +
+    ggtitle('Matriz de Correlação')
+```
+
+Reconhecidas as correlações prosseguiu-se na observação das mais significativas.
+
+
+```{r echo=FALSE}
+# Plota gráfico fixed.acidity x citric.acid, corr = 0.672
+grid.arrange(
+  ggplot(data=wd, aes(x = fixed.acidity, y = citric.acid)) +
+    geom_point(alpha = 0.2, color = wine_color) +
+    ggtitle('Correlação entre Ácido Cítrico e Acidez Fixa') +
+    labs(x="fixed.acidity (g / dm ^ 3)", y="citric.acid (g / dm ^ 3)"),
+  ggplot(data = wd, aes(x = fixed.acidity, y = citric.acid, group = 1)) +
+      geom_jitter(alpha = 0.3, color = wine_color) +
+      geom_boxplot(alpha = 0.5, color = wine_color) +
+      stat_summary(fun.y = "mean", geom = "point",
+                 color = wine_color, shape = 19, size = 4) +
+    ggtitle('Correlação entre Ácido Cítrico e Acidez Fixa') +
+    labs(x="fixed.acidity (g / dm ^ 3)", y="citric.acid (g / dm ^ 3)"),
+  nrow = 2)
+
+# Plota gráfico fixed.acidity x density, corr = 0.668
+grid.arrange(
+  ggplot(data=wd, aes(x = fixed.acidity, y = density)) +
+    geom_point(alpha = 0.2, color = wine_color) +
+    ggtitle('Correlação entre Densidade e Acidez Fixa') +
+    labs(x="fixed.acidity (g / dm ^ 3)", y="density (g / cm ^ 3)"),
+  ggplot(data = wd, aes(x = fixed.acidity, y = density, group = 1)) +
+      geom_jitter(alpha = 0.3, color = wine_color) +
+      geom_boxplot(alpha = 0.5, color = wine_color) +
+      stat_summary(fun.y = "mean", geom = "point",
+                 color = wine_color, shape = 19, size = 4) +
+    ggtitle('Correlação entre Densidade e Acidez Fixa') +
+    labs(x="fixed.acidity (g / dm ^ 3)", y="density (g / cm ^ 3)"),
+  nrow = 2)
+
+
+# Plota gráfico citric.acid x density, corr = 0.365
+grid.arrange(
+  ggplot(data=wd, aes(x = citric.acid, y = density)) +
+    geom_point(alpha = 0.2, color = wine_color) +
+    ggtitle('Correlação entre Densidade e Ácido Cítrico') +
+    labs(x="citric.acid (g / dm ^ 3)", y="density (g / cm ^ 3)"),
+  ggplot(data = wd, aes(x = citric.acid, y = density, group = 1)) +
+      geom_jitter(alpha = 0.3, color = wine_color) +
+      geom_boxplot(alpha = 0.5, color = wine_color) +
+      stat_summary(fun.y = "mean", geom = "point",
+                 color = wine_color, shape = 19, size = 4) +
+    ggtitle('Correlação entre Densidade e Ácido Cítrico') +
+    labs(x="citric.acid (g / dm ^ 3)", y="density (g / cm ^ 3)"),
+  nrow = 2)
+
+
+# Plota gráfico residual.sugar x density, corr = 0.355
+grid.arrange(
+  ggplot(data=wd, aes(x = residual.sugar, y = density)) +
+    geom_point(alpha = 0.2, color = wine_color) +
+    ggtitle('Correlação entre Densidade e Açúcar Residual') +
+    labs(x="residual.sugar (g / dm ^ 3)", y="density (g / cm ^ 3)"),
+  ggplot(data = wd, aes(x = residual.sugar, y = density, group = 1)) +
+      geom_jitter(alpha = 0.3, color = wine_color) +
+      geom_boxplot(alpha = 0.5, color = wine_color) +
+      stat_summary(fun.y = "mean", geom = "point",
+                 color = wine_color, shape = 19, size = 4) +
+    ggtitle('Correlação entre Densidade e Açúcar Residual') +
+    labs(x="residual.sugar (g / dm ^ 3)", y="density (g / cm ^ 3)"),
+  nrow = 2)
+
+
+# Plota gráfico chlorides x density, corr = 0.201
+grid.arrange(
+  ggplot(data=wd, aes(x = chlorides, y = density)) +
+    geom_point(alpha = 0.2, color = wine_color) +
+    ggtitle('Correlação entre Densidade e Cloretos') +
+    labs(x="chlorides (g / dm ^ 3)", y="density (g / cm ^ 3)"),
+  ggplot(data = wd, aes(x = chlorides, y = density, group = 1)) +
+      geom_jitter(alpha = 0.3, color = wine_color) +
+      geom_boxplot(alpha = 0.5, color = wine_color) +
+      stat_summary(fun.y = "mean", geom = "point",
+                 color = wine_color, shape = 19, size = 4) +
+    ggtitle('Correlação entre Densidade e Cloretos') +
+    labs(x="chlorides (g / dm ^ 3)", y="density (g / cm ^ 3)"),
+  nrow = 2)
+
+# Plota gráfico alcohol x density, corr = -0.496
+grid.arrange(
+  ggplot(data=wd, aes(x = alcohol, y = density)) +
+    geom_point(alpha = 0.2, color = wine_color) +
+    ggtitle('Correlação entre Densidade e Álcool') +
+    labs(x="alcohol (%)", y="density (g / cm ^ 3)"),
+  ggplot(data = wd, aes(x = alcohol, y = density, group = 1)) +
+      geom_jitter(alpha = 0.3, color = wine_color) +
+      geom_boxplot(alpha = 0.5, color = wine_color) +
+      stat_summary(fun.y = "mean", geom = "point",
+                 color = wine_color, shape = 19, size = 4) +
+    ggtitle('Correlação entre Densidade e Álcool') +
+    labs(x="alcohol (%)", y="density (g / cm ^ 3)"),
+  nrow = 2)
+
+
+# Plota gráfico citric.acid x pH corr = -0.542
+grid.arrange(
+  ggplot(data=wd, aes(x = citric.acid, y = pH)) +
+    geom_point(alpha = 0.2, color = wine_color) +
+    ggtitle('Correlação entre pH e Ácido Cítrico') +
+    labs(x="citric.acid (g / dm ^ 3)"),
+  ggplot(data = wd, aes(x =citric.acid, y = pH, group = 1)) +
+      geom_jitter(alpha = 0.3, color = wine_color) +
+      geom_boxplot(alpha = 0.5, color = wine_color) +
+      stat_summary(fun.y = "mean", geom = "point",
+                 color = wine_color, shape = 19, size = 4) +
+    ggtitle('Correlação entre pH e Ácido Cítrico') +
+    labs(x="citric.acid (g / dm ^ 3)"),
+  nrow = 2)
+
+
+# Plota gráfico fixed.acidity x pH, corr = -0.683
+grid.arrange(
+  ggplot(data=wd, aes(x = fixed.acidity, y = pH)) +
+    geom_point(alpha = 0.2, color = wine_color) +
+    ggtitle('Correlação entre pH e Acidez Fixa') +
+    labs(x="fixed.acidity (g / dm ^ 3)"),
+  ggplot(data = wd, aes(x = fixed.acidity, y = pH, group = 1)) +
+      geom_jitter(alpha = 0.3, color = wine_color) +
+      geom_boxplot(alpha = 0.5, color = wine_color) +
+      stat_summary(fun.y = "mean", geom = "point",
+                 color = wine_color, shape = 19, size = 4) +
+    ggtitle('Correlação entre pH e Acidez Fixa') +
+    labs(x="fixed.acidity (g / dm ^ 3)"),
+  nrow = 2)
+```
+
+Observou-se uma forte correlação negativa entre 'fixed.acidty' e 'pH'.
+Entre 'citric.acid' e 'pH' também há, porém mais fraca.  
+Pareceu curioso que 'volatile.acidity' tenha correlação positiva com 'pH'.
+
+O atributo density tem correlação moderada com 'citric.acid', 'residual.sugar' e 'chlorides'.
+
+Após observar as correlações entre algumas variáveis, seguiu-se na observação das correlações com a variável de interesse.
+
+
+```{r echo=FALSE}
+# Plota gráfico alcohol x quality, corr = 0.476
+
+  ggplot(data = wd, aes(x =quality, y = alcohol, group = 1)) +
+    geom_jitter(alpha = 0.3, color = wine_color) +
+    geom_boxplot(alpha = 0.5, color = wine_color) +
+    stat_summary(fun.y = "mean", geom = "point",
+                 color = wine_color, shape = 19, size = 4) +
+    ggtitle('Correlação entre Álcool e Qualidade') +
+    labs(y="alcohol (%)")
+```
+
+Ao que parece, vinhos considerados de melhor qualidade (acima de 7), tem maior concentração de álcool. 
+
+
+```{r echo=FALSE}
+# Plota gráfico volatile.acidity x quality, corr = -0.391
+  ggplot(data = wd, aes(x =quality, y = volatile.acidity, group = 1)) +
+    geom_jitter(alpha = 0.3, color = wine_color) +
+    geom_boxplot(alpha = 0.5, color = wine_color) +
+    stat_summary(fun.y = "mean", geom = "point",
+                 color = wine_color, shape = 19, size = 4) +
+    ggtitle('Correlação entre Acidez Volátil e Qualidade') +
+    labs(y="volatile.acidity (g / dm ^ 3)")
+```
+
+Parece bastante claro que a qualidade varia inversamente em relação a acidez volátil. Maior acidez volátil foi considerado pior.
+
+
+```{r echo=FALSE}
+# Plota gráfico sulphates x quality, corr = 0.251
+  ggplot(data = wd, aes(x =quality, y = sulphates, group = 1)) +
+    geom_jitter(alpha = 0.3, color = wine_color) +
+    geom_boxplot(alpha = 0.5, color = wine_color) +
+    stat_summary(fun.y = "mean", geom = "point",
+                  color = wine_color, shape = 19, size = 4) +
+    ggtitle('Correlação entre Sulfatos e Qualidade') +
+    labs(y="sulphates (g / dm ^ 3)")
+```
+
+Curioso, mas sulfatos parecem ter sua importância para os vinhos considerados melhores.
+
+
+```{r echo=FALSE}  
+# Plota gráfico citric.acid x quality, corr = 0.226
+
+  ggplot(data = wd, aes(x =quality, y = citric.acid, group = 1)) +
+    geom_jitter(alpha = 0.3, color = wine_color) +
+    geom_boxplot(alpha = 0.5, color = wine_color) +
+    stat_summary(fun.y = "mean", geom = "point",
+                 color = wine_color, shape = 19, size = 4) +
+    ggtitle('Correlação entre Ácido Cítrico e Qualidade') +
+    labs(y="citric.acid (g / dm ^ 3)")
+```
+
+O ácido cítrico parece ter influência positiva na qualidade observada nos vinhos.
+
+
+```{r echo=FALSE}
+# Plota gráfico residual.sugar x quality, corr = 0.0137
+
+  ggplot(data = wd, aes(x =quality, y = residual.sugar, group = 1)) +
+    geom_jitter(alpha = 0.3, color = wine_color) +
+    geom_boxplot(alpha = 0.5, color = wine_color) +
+    stat_summary(fun.y = "mean", geom = "point",
+                 color = wine_color, shape = 19, size = 4) +
+    ggtitle('Correlação entre Açúcar Residual e Qualidade') +
+    labs(y="residual.sugar (g / dm ^ 3)")
+```
+
+O açúcar residual parece ter pouca expressão na qualidade observada.
+
+
+As correlações de 'quality' com 'alchohol', 'volatility.acidity' e 'citric.acid' confirmaram algumas intuições.  
+Mas outras surpreenderam, como 'sulphates' e 'residual.sugar'.
+
+------
+
+# Análise Bivariada
+
+### Discuta sobre alguns dos relacionamentos observados nesta parte da investigação. Como os atributos de interesse variaram no conjunto de dados?
+
+Com baixa correlação indica que a qualidade não parece ser afetada, ou ser muito pouco afetada, por 'fixed.acidity'.
+
+Quando a concentração de 'volatile.acidity' diminui, a qualidade parece aumentar. Os vinhos inferiores e médios, são os que tem mais altos índices.
+
+Nos vinhos melhores a concentração de 'citric.acid' e 'sulphates' é maior.
+
+O 'residual.sugar' parece não aparesentar a influência esperada na boa qualidade.
+
+Aparentemente o 'alchohol' é o atributo de maior influência na qualidade dos vinhos.
+
+
+
+### Você observou algum relacionamento interessante entre os outros atributos (os que não são de interesse)?
+
+Sim, inesperadamente 'sulphates' parece ter maior influência nos melhores vinhos do que 'residual.sugar'.
+
+Algo curioso também é que 'volatile.acidity' tem correlação positiva com 'pH', enquanto 'citric.acid' e 'fixed.acidity' tem correlação negativa. Sendo o pH um índice referente a acidez e basicidade de soluções, é intrigante que componentes relativos a acidez tenham correlações inversas em relação a ele. Talvez um químico possa explicar.
+
+
+### Qual foi o relacionamento mais forte encontrado?
+
+As correlações mais fortes com 'quality' foram de 0.476, com 'alchohol' e negativa de -0.391, com 'volatile.acidity'.
+
+E entre as demais variáveis observou-se a correlação positiva de 0.697 entre 'fixed.acidity' e 'citric.acid'. E a correlação negativa de -0.699 entre 'fixed.acidty' e 'pH'.
+
+
+------
+
+# Seção de Gráficos Multivariados
+
+Em seguida prosseguiu-se tentando compreender melhor, como as variáveis que parecem ter mais influência na qualidade afetam a mesma, nas diferentes classes definidas.
+
+```{r echo=FALSE, Multivariate_Plots}
+# Plota gráfico de densidade; alcohol
+ggplot(data = wd, aes(x = alcohol, fill = class, color = class)) + geom_density(alpha=0.08) +
+    ggtitle('Concentração de Álcool por Classificação') +
+    labs(x='alcohol (%)', y="Observações")
+```
+
+Nos melhores vinhos a concentração de álcool é próxima a 12, enquanto em grande parte os medianos e inferiores é abaixo de 10.
+
+
+```{r echo=FALSE}
+# Plota gráfico de densidade; volatile.acidity
+ggplot(data = wd, aes(x = volatile.acidity, fill = class, color = class)) + geom_density(alpha=0.08) +
+    ggtitle('Concentração de Acidez Volátil por Classificação') +
+    labs(x='volatile.acidity (g / dm ^ 3)', y="Observações")
+```
+
+A concentração de acidez volátil aparece abaixo de 0.4 para os melhores vinhos e próxima a 0.6 para os demais.
+
+
+```{r echo=FALSE}
+# Plota gráfico de densidade; sulphates
+ggplot(data = wd, aes(x = sulphates, fill = class, color = class)) + geom_density(alpha=0.08) +
+    ggtitle('Concentração de Sulfatos por Classificação') +
+    labs(x='sulphates (g / dm ^ 3)', y="Observações")
+```
+
+Muitos vinhos inferiores e medianos tem concentração de sulfatos entre 0.5 e 0.6.  
+Os melhores aparecem com concentração próxima a 7.5.
+
+
+```{r echo=FALSE}
+
+# Plota gráfico de densidade; citric.acid
+ggplot(data = wd, aes(x = citric.acid, fill = class, color = class)) +   geom_density(alpha=0.08) +
+    ggtitle('Concentração de Ácido Cítrico por Classificação') +
+    labs(x='citric.acid (g / dm ^ 3)', y="Observações")
+```
+
+A grande parte dos vinhos inferiores tem concentração de ácido cítrico abaixo de 0.25.  
+Parte dos vinhos medianos tem concentrações entre 0 e 0.50, enquanto a maioria dos melhores, próximo a 0.40.
+
+
+```{r echo=FALSE}
+
+# Plota gráfico de densidade; residual.sugar
+ggplot(data = wd, aes(x = residual.sugar, fill = class, color = class)) +   geom_density(alpha=0.08) +
+    ggtitle('Concentração de Açúcar por Classificação') +
+    labs(x='residual.sugar (g / dm ^ 3)', y="Observações")
+```
+
+A concentração residual de açúcar apresenta-se próxima a 2 para a maioria dos vinhos.
+
+------
+
+## Modelo Linear
+
+Optou-se por experimentar um modelo linear usando as principais variáveis.
+
+```{r echo=FALSE, Linear_Model}
+
+# Estabelece uma semente
+set.seed(51240963)
+
+# Particiona dados de treinamento e teste
+training_data <- sample_frac(wd, .6)
+test_data <- wd[ !wd$X %in% training_data$X, ]
+
+# Treina modelo linear
+model1 <- lm(as.numeric(quality) ~ alcohol, data = training_data)
+model2 <- update(model1, ~ . + sulphates)
+model3 <- update(model2, ~ . + volatile.acidity)
+model4 <- update(model3, ~ . + citric.acid)
+model5 <- update(model4, ~ . + fixed.acidity)
+model6 <- update(model5, ~ . + pH)
+
+# Exibe tabelas dos modelos
+mtable(model1,model2,model3,model4,model5,model6)
+
+# Realiza predição
+qe <- data.frame(
+  test_data$quality,
+  predict(model6, test_data) - as.numeric(test_data$quality)
+)
+```
+
+O melhor valor R^2 obtido foi 0.3. Talvez a alta quantidade de observações relativas a vinhos medianos possa ter prejudicado a predição.
+
+------
+
+# Análise Multivariada
+
+### Discuta sobre os relacionamentos observados nesta parte da investigação. Quais atributos que fortaleceram os demais na observação das variáveis de interesse?
+
+Nos gráficos é perceptível que densidade de 'alchohol' aumenta nos melhores vinhos, enquanto diminui nos medianos e inferiores. O mesmo acontece em menor escala com 'sulphates' e 'citric.acid'. E inversamente com 'volatile.acidity'.
+
+Embora os vinhos melhores aparentem ter menos 'volatile.acidity', em uma correlação negativa de -0.391, a diferença que os destingue dos demais parece pequena.
+
+Aparentemente a maior parte do vinhos tem um índice parecido de 'residual.sugar'.
+
+Muito mais pela análise dos gráficos, do que pelas predições do modelo, considerou-se que a maior influência sobre a opinião dos profissionais que avaliaram os vinhos parece ter vindo dos seguintes atributos: 'alchohol', 'volatile.acidity', 'sulphates' e 'citric.acid'.
+
+### Interações surpreendentes e/ou interessantes foram encontradas entre os atributos?
+
+Sim, foi inesperado perceber que 'sulphates' aparentemente tem mais importância na qualidade de um bom vinho, do que 'citric.acid' e 'residual.sugar'.
+
+
+### OPCIONAL: Modelos foram criados usando este conjunto de dados? Discuta sobre os pontos fortes e as limitações do seu modelo.
+
+Sim, experimentou-se um modelo linear com algumas variáveis.
+
+Obteve-se uma baixa pontuação de R^2, muito provavelmente pela reduzida quantidade de observações de vinhos inferiores e melhores, em relação aos medianos.
+
+
+------
+
+# Gráficos Finais e Sumário
+
+### Primeiro Gráfico
+```{r echo=FALSE, Plot_One}
+# Plota gráfico quality
+  ggplot(data = wd, aes(x = quality)) +
+    geom_histogram(binwidth = 0.3, alpha = 0.2,
+                   color = wine_color, fill = I(wine_color)) +
+    scale_x_continuous() +
+    ggtitle('Vinhos por Qualidade') +
+    labs(x="Qualidade",y="Frequência")
+```
+
+### Descrição do Primeiro Gráfico
+A distribuição da qualidade dos vinhos no conjunto de dados.  
+Há muito mais observações de vinhos medianos, do que de vinhos inferiores e melhores.
+
+### Segundo Gráfico
+```{r echo=FALSE, Plot_Two}
+# Plota gráficos sulphates x quality
+grid.arrange(
+  ggplot(data = wd, aes(x = sulphates, fill = class, color = class)) +
+    geom_density(alpha=0.08, trim = TRUE) +
+    ggtitle('Concentração de Sulfatos por Classificação') +
+    labs(x="Sulfatos (g / dm ^ 3)", y="Observações"),
+  ggplot(data = wd, aes(x = residual.sugar, fill = class, color = class)) +
+  geom_density(alpha=0.08, trim = TRUE) +
+  ggtitle('Concentração de Açúcar Residual por Classificação') +
+  labs(x="Açúcar Residual (g / dm ^ 3)", y="Observações"),
+  nrow = 2)
+```
+
+### Descrição do Segundo Gráfico
+Curiosamente sulfatos tem maior influência do que o açúcar residual.  
+Enquanto grande parte dos vinhos tem concentrações semelhantes de açúcar, os vinhos considerados melhores tem maior concentração de sulfatos.
+
+### Terceiro Gráfico
+
+```{r echo=FALSE, Plot_Three, fig.width=10,fig.height=10}
+# Plota arranjo de gráficos
+grid.arrange(
+  ggplot(data = wd, aes(x =quality, y = alcohol, group = 1)) +
+    geom_jitter(alpha = 0.3, color = wine_color) +
+    geom_boxplot(alpha = 0.5, color = wine_color) +
+    stat_summary(fun.y = "mean", geom = "point",
+                 color = wine_color, shape = 19, size = 4) +
+    ggtitle('Influência do Álcool na Qualidade') +
+    labs(x="Qualidade", y="Álcool (%)"),
+  
+  ggplot(data = wd, aes(x = alcohol, fill = class, color = class)) +
+    geom_density(alpha=0.08)+
+    ggtitle('Concentração de Álcool por Classificação') +
+    labs(x="Álcool (%)", y="Observações"),
+  
+  ggplot(data = wd, aes(x =quality, y = volatile.acidity, group = 1)) +
+    geom_jitter(alpha = 0.3, color = wine_color) +
+    geom_boxplot(alpha = 0.5, color = wine_color) +
+    stat_summary(fun.y = "mean", geom = "point",
+                  color = wine_color, shape = 19, size = 4) +
+    ggtitle('Influência da Acidez Volátil na Qualidade') +
+    labs(x="Qualidade", y="Acidez Volátil (g / dm ^ 3)"),
+  
+  ggplot(data = wd, aes(x = volatile.acidity, fill = class, color = class)) +
+    geom_density(alpha=0.08) +
+    ggtitle('Concentração de Acidez Volátil por Classificação') +
+    labs(x="Acidez Volátil (g / dm ^ 3)", y="Observações"),
+  
+  ggplot(data = wd, aes(x =quality, y = sulphates, group = 1)) +
+    geom_jitter(alpha = 0.3, color = wine_color) +
+    geom_boxplot(alpha = 0.5, color = wine_color) +
+    stat_summary(fun.y = "mean", geom = "point",
+                  color = wine_color, shape = 19, size = 4) +
+    ggtitle('Influência dos Sulfatos na Qualidade') +
+    labs(x="Qualidade", y="Sulfatos (g / dm ^ 3)"),
+  
+  ggplot(data = wd, aes(x = sulphates, fill = class, color = class)) +
+    geom_density(alpha=0.08) +
+    ggtitle('Concentração de Sulfatos por Classificação') +
+    labs(x="Sulfatos (g / dm ^ 3)", y="Observações"),
+  
+  ggplot(data = wd, aes(x =quality, y = citric.acid, group = 1)) +
+    geom_jitter(alpha = 0.3, color = wine_color) +
+    geom_boxplot(alpha = 0.5, color = wine_color) +
+    stat_summary(fun.y = "mean", geom = "point",
+                 color = wine_color, shape = 19, size = 4) +
+    ggtitle('Influência do Ácido Cítrico na Qualidade') +
+    labs(x="Qualidade", y="Ácido Cítrico (g / dm ^ 3)"),
+  
+  ggplot(data = wd, aes(x = citric.acid, fill = class, color = class)) +
+    geom_density(alpha=0.08) +
+    ggtitle('Concentração de Ácido Cítrico por Classificação') +
+    labs(x="Ácido Cítrico (g / dm ^ 3)", y="Observações"),
+  nrow = 4, ncol = 2) 
+```
+
+### Descrição do Terceiro Gráfico
+Uma visão geral dos quatro atributos que possivelmente mais influenciaram na percepção dos profissionais que avaliaram a qualidade dos vinhos neste conjunto de dados.
+
+------
+
+# Reflexão
+
+Os dados sugerem o Álcool, Acidez Volátil, Sulfatos e Ácido Cítrico, como sendo os possíveis atributos indicativos de qualidade para os vinhos.
+
+Mas neste conjunto de dados, a quantidade de vinhos na categoria mediana está acima de 80%, com 3% de vinhos inferiores e 13% de vínhos considerados melhores.
+
+Um conjunto de dados com melhor distribuição seria interessante para afinar um modelo preditivo mais acurado.
+
+Futuramente seria interessante contar com a ajuda de alguém com formação na área de química. Talvez novos insights surjam sobre esta base de dados ou sugestões para criação de um novo conjunto de dados, com mais variáveis quimicamente importantes e que talvez não tenham sido incluídas no conjunto de dados atual.
+
+Considerei bastante instrutivo trabalhar nesta análise, que me proporcionou vivenciar um pouco mais do que a ciência de dados pode nos oferecer.
+
+Durante este projeto e anteriores, brotaram e minha mente idéias que reservo para explorar futuramente. Com a satisfação de compreender melhor as ferramentas necessárias para isso.
+
+
+------
+#### Referências conforme solicitadas pelo autores do conjunto de dados.
+
+P. Cortez, A. Cerdeira, F. Almeida, T. Matos e J. Reis.
+Modelagem de preferências de vinhos por mineração de dados a partir de propriedades físico-químicas.
+Em Decision Support Systems, Elsevier, 47 (4): 547-553. ISSN: 0167-9236.
+
+Disponível em: [@Elsevier] http://dx.doi.org/10.1016/j.dss.2009.05.016  
+[Pré-impressão (pdf)] http://www3.dsi.uminho.pt/pcortez/winequality09.pdf  
+[bib] http://www3.dsi.uminho.pt/pcortez/dss09.bib  
+  

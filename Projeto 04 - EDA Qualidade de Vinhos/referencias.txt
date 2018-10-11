@@ -1,0 +1,10 @@
+Referências:
+
+https://classroom.udacity.com
+https://forums.udacity.com
+https://rdocumentation.org
+https://stackoverflow.com
+https://bookdown.org
+https://www.cookbook-r.com
+https://www.sthda.com
+https://ploty.ly
